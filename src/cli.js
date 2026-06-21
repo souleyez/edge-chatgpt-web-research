@@ -163,7 +163,8 @@ async function main() {
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   main().catch((error) => {
-    console.error(error?.stack ?? error);
+    const debug = process.env.EDGE_CHATGPT_DEBUG === "1" || process.env.DEBUG;
+    console.error(debug ? (error?.stack ?? error) : (error?.message ?? error));
     process.exitCode = 1;
   });
 }
