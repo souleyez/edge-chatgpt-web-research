@@ -1,4 +1,4 @@
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
 export function slugifyTopic(topic = "chatgpt-web-research") {
@@ -30,7 +30,19 @@ export function readPrompt({ prompt, promptFile }) {
     throw new Error("Use either --prompt or --prompt-file, not both.");
   }
   if (promptFile) {
-    return readFileSync(path.resolve(promptFile), "utf8");
+    const resolvedPromptFile = path.resolve(promptFile);
+    if (!existsSync(resolvedPromptFile)) {
+      throw new Error(
+        [
+          `Prompt file was not found: ${resolvedPromptFile}`,
+          "Create one first, for example:",
+          "  Copy-Item .\\examples\\prompt.zh.md .\\prompt.md",
+          "Or pass an inline prompt:",
+          "  node .\\src\\cli.js run --prompt \"请调研...\" --topic my-topic"
+        ].join("\n")
+      );
+    }
+    return readFileSync(resolvedPromptFile, "utf8");
   }
   if (prompt) {
     return prompt;

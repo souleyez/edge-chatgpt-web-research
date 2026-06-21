@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { buildReportPaths, slugifyTopic, stripMarker } from "../src/files.js";
+import { buildReportPaths, readPrompt, slugifyTopic, stripMarker } from "../src/files.js";
 import { ensurePromptMarker } from "../src/chatgpt.js";
 import { parseArgs } from "../src/cli.js";
 
@@ -22,6 +22,13 @@ describe("file helpers", () => {
 
   it("removes a marker from readable reports", () => {
     assert.equal(stripMarker("hello\n[[DONE]]\n", "[[DONE]]"), "hello");
+  });
+
+  it("gives an actionable message when a prompt file is missing", () => {
+    assert.throws(
+      () => readPrompt({ promptFile: "missing-prompt.md" }),
+      /Copy-Item \.\\examples\\prompt\.zh\.md \.\\prompt\.md/
+    );
   });
 });
 

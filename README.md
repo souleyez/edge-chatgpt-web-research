@@ -39,30 +39,22 @@ Log in to ChatGPT manually in that Edge window. The login state stays inside tha
 
 ## Run Research
 
-Create a prompt file:
+Start from the included prompt template:
 
 ```powershell
-@'
-今天是 2026-06-21。请联网调研 Microsoft Edge CDP 自动化用于个人 ChatGPT 网页调研的可行性，输出中文 Markdown 报告。
-
-请包含：
-1. 一句话结论
-2. 技术路径
-3. 风险与限制
-4. 适合/不适合场景
-5. 可验证来源链接
-
-要求：
-- 结论先行。
-- 区分已核验事实、推断和判断。
-- 回答最后单独一行输出：[[CHATGPT_WEB_RESEARCH_DONE]]
-'@ | Set-Content -Encoding UTF8 .\prompt.md
+Copy-Item .\examples\prompt.zh.md .\prompt.md
 ```
 
 Run:
 
 ```powershell
 node .\src\cli.js run --prompt-file .\prompt.md --topic edge-cdp-chatgpt
+```
+
+Or skip the file and pass a short prompt inline:
+
+```powershell
+node .\src\cli.js run --prompt "请联网调研 Microsoft Edge CDP 自动化用于个人 ChatGPT 网页调研的可行性，输出中文 Markdown 报告。" --topic edge-cdp-chatgpt
 ```
 
 The CLI adds a unique marker automatically if your prompt does not include one. Reports are written to `reports/`:
