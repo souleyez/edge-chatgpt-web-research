@@ -9,6 +9,9 @@
   "scripts": {
     "doctor": "node ./src/cli.js doctor",
     "launch": "node ./src/cli.js launch",
+    "recover": "node ./src/cli.js recover",
+    "skill": "powershell -ExecutionPolicy Bypass -File ./scripts/run-skill.ps1",
+    "install-skill": "powershell -ExecutionPolicy Bypass -File ./scripts/install-local-skill.ps1",
     "test": "node --test"
   },
   "keywords": [

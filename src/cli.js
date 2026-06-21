@@ -2,7 +2,7 @@
 import { existsSync } from "node:fs";
 import { pathToFileURL } from "node:url";
 import process from "node:process";
-import { createMarker, connectToEdge, ensurePromptMarker, getChatGptPage, submitPrompt, waitForMarker } from "./chatgpt.js";
+import { createMarker, connectToEdge, ensurePromptMarker, extractAssistantMessages, getChatGptPage, submitPrompt, waitForMarker } from "./chatgpt.js";
 import { defaultPort, defaultProfileDir, findEdgeExecutable, launchEdge, probeCdp, waitForCdp } from "./edge.js";
 import { readPrompt, saveReports } from "./files.js";
 
@@ -42,6 +42,7 @@ Commands:
   doctor                         Check Edge executable and CDP endpoint
   launch                         Launch dedicated Edge profile at ChatGPT
   run --prompt-file prompt.md     Submit prompt, wait for marker, save reports
+  recover --topic my-topic        Save the latest completed ChatGPT answer
 
 Options:
   --port 9223
@@ -148,6 +149,40 @@ async function run(options) {
   }
 }
 
+async function recover(options) {
+  const port = numberOption(options.port, defaultPort());
+  const cdp = await probeCdp(port);
+  if (!cdp.ok) {
+    throw new Error(`CDP endpoint is not reachable at ${cdp.url}. Run launch first.`);
+  }
+
+  const browser = await connectToEdge(port);
+  try {
+    const page = await getChatGptPage(browser);
+    const messages = await extractAssistantMessages(page);
+    const answer = messages.at(-1)?.text?.trim() ?? "";
+    if (!answer) {
+      throw new Error("No assistant response was found on the current ChatGPT page.");
+    }
+    const marker = answer.match(/\[\[CHATGPT_WEB_RESEARCH_DONE_[^\]]+\]\]/)?.[0];
+    if (!marker && options.requireMarker !== false) {
+      throw new Error("The latest assistant response does not contain a ChatGPT web research marker.");
+    }
+    const paths = saveReports({
+      answer,
+      marker: marker ?? "",
+      topic: options.topic || "chatgpt-web-research",
+      outDir: options.outDir || "reports",
+      chatUrl: page.url(),
+      extractionMethod: marker ? "cdp-recovery" : "cdp-recovery-without-marker",
+      keepMarker: options.keepMarker === true
+    });
+    console.log(JSON.stringify({ ok: true, marker: marker ?? null, ...paths }, null, 2));
+  } finally {
+    await browser.close().catch(() => {});
+  }
+}
+
 async function main() {
   const [command = "help", ...rest] = process.argv.slice(2);
   const options = parseArgs(rest);
@@ -158,6 +193,7 @@ async function main() {
   if (command === "doctor") return doctor(options);
   if (command === "launch" || command === "login") return launch(options);
   if (command === "run") return run(options);
+  if (command === "recover") return recover(options);
   throw new Error(`Unknown command: ${command}\n\n${help()}`);
 }
 

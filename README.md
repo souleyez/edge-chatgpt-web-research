@@ -68,6 +68,13 @@ The CLI adds a unique marker automatically if your prompt does not include one. 
 node .\src\cli.js doctor
 node .\src\cli.js launch
 node .\src\cli.js run --prompt-file .\prompt.md --topic my-topic
+node .\src\cli.js recover --topic my-topic
+```
+
+The wrapper used by the Codex skill handles dependencies and recovery:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\run-skill.ps1 -PromptFile .\prompt.md -Topic my-topic
 ```
 
 Useful options:
@@ -97,3 +104,17 @@ The repository `.gitignore` excludes the default sensitive outputs.
 ## Codex Skill
 
 This repository also contains a root `SKILL.md`, so a Codex instance can use the same project as a reusable workflow after cloning or installing it as a local skill.
+
+Install or update the local Codex skill:
+
+```powershell
+npm run install-skill
+```
+
+Local install path used on this machine:
+
+```text
+C:\Users\soulzyn\.codex\skills\edge-chatgpt-web-research
+```
+
+After installing or updating a skill, restart Codex so it appears in the skill picker.
