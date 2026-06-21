@@ -1,0 +1,19 @@
+node_modules/
+reports/
+edge-profile/
+*.log
+.env
+.env.*
+!.env.example
+
+# Dedicated browser state must never be committed.
+edge-chatgpt-profile/
+User Data/
+Default/
+Profile */
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

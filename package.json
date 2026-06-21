@@ -1,0 +1,30 @@
+{
+  "name": "edge-chatgpt-web-research",
+  "version": "0.1.0",
+  "description": "Run ChatGPT web research through a dedicated Microsoft Edge CDP profile and save verified Markdown reports.",
+  "type": "module",
+  "bin": {
+    "edge-chatgpt-web-research": "./src/cli.js"
+  },
+  "scripts": {
+    "doctor": "node ./src/cli.js doctor",
+    "launch": "node ./src/cli.js launch",
+    "test": "node --test"
+  },
+  "keywords": [
+    "chatgpt",
+    "edge",
+    "cdp",
+    "playwright",
+    "research",
+    "codex-skill"
+  ],
+  "author": "souleyez",
+  "license": "MIT",
+  "dependencies": {
+    "playwright-core": "^1.57.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

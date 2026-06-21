@@ -1,0 +1,4 @@
+interface:
+  display_name: "Edge ChatGPT Web Research"
+  short_description: "Run ChatGPT web research through Edge CDP."
+  default_prompt: "Use $edge-chatgpt-web-research to run a ChatGPT web research prompt through Microsoft Edge and save a verified Markdown report."
